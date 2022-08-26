@@ -91,4 +91,5 @@ func init() {
 	flags.BoolVar(&checkflags.ListPackages, "list-packages", false, "list packages in the catalog")
 	flags.StringSliceVar(&checkflags.FilterPackages, "filter-packages", []string{}, "a list of package(s) which limits audits and/or other flag(s) output")
 	flags.BoolVar(&checkflags.AllInstallModes, "all-installmodes", false, "when set, all install modes supported by an operator will be tested")
+	flags.StringVar(&checkflags.CustomResource, "customresource", "", "specifies the custom resource(yaml) to test against")
 }

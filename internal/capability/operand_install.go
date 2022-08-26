@@ -2,6 +2,7 @@ package capability
 
 import (
 	"context"
+	"io/ioutil"
 	"strings"
 	"time"
 
@@ -24,6 +25,8 @@ func (ca *CapAudit) getAlmExamples() error {
 	}
 
 	opts := v1.ListOptions{}
+	options := operator.OperatorCheckOptions{}
+	customCRFile := options.CustomResource
 
 	// gets the list of CSVs present in a particular namespace
 	CSVList, err := olmClientset.OperatorsV1alpha1().ClusterServiceVersions(ca.Namespace).List(ctx, opts)
@@ -32,15 +35,25 @@ func (ca *CapAudit) getAlmExamples() error {
 	}
 
 	almExamples := ""
-	// map of string interface which consist of ALM examples from the CSVList
+
 	if len(CSVList.Items) > 0 {
 		almExamples = CSVList.Items[0].ObjectMeta.Annotations["alm-examples"]
 	}
 	var almList []map[string]interface{}
-
-	err = yaml.Unmarshal([]byte(almExamples), &almList)
+	operandFile, err := ioutil.ReadFile(customCRFile)
 	if err != nil {
 		return err
+	}
+	if customCRFile != "" {
+		err = yaml.Unmarshal(operandFile, &almList)
+		if err != nil {
+			return err
+		}
+	} else {
+		err = yaml.Unmarshal([]byte(almExamples), &almList)
+		if err != nil {
+			return err
+		}
 	}
 
 	ca.CustomResources = almList

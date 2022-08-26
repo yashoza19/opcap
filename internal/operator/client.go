@@ -59,6 +59,8 @@ type OperatorCheckOptions struct {
 	FilterPackages []string
 	// AllInstallModes is passed to test all install modes
 	AllInstallModes bool
+	// CustomResource file passed by the use to test custom resources
+	CustomResource string
 }
 
 func NewOpCapClient() (Client, error) {
